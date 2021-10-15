@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -17,13 +19,14 @@ const PRODUCTION = process.env.NODE_HTTPS;
 const STATIC_PATH = process.env.STATIC_PATH;
 
 const cerfPathes = {
-  cert: '/etc/letsencrypt/live/termuovex.space/fullchain.pem',
-  key: '/etc/letsencrypt/live/termuovex.space/privkey.pem',
+  // cert: PATH_TO_cert,
+  // key: PATH_TO_key,
 }
 
 const allowedOrigins = [
   'http://localhost:8080',
   'https://localhost:8080',
+  // another url
 ];
 
 app.use(cors({
