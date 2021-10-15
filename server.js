@@ -17,6 +17,7 @@ const { sendEmail } = require("./mail-sender");
 const jsonParser = bodyParser.json();
 const PRODUCTION = process.env.NODE_HTTPS;
 const STATIC_PATH = process.env.STATIC_PATH;
+const LOCAL_PORT = 3000;
 
 const cerfPathes = {
   // cert: PATH_TO_cert,
@@ -102,10 +103,10 @@ if (PRODUCTION) {
     key: cerfPathes.key,
   },app);
 
-  httpServer.listen(80, () => console.log('HTTP started on port 80'));
-  httpsServer.listen(443, () => console.log('HTTPS started on port 443'));
+  httpServer.listen(80, () => console.log('HTTP started on port https://localhost:80'));
+  httpsServer.listen(443, () => console.log('HTTPS started on port http://localhost:443'));
 } else {
   const httpServer = http.createServer(app);
 
-  httpServer.listen(8080, () => console.log('HTTP started on port 8080'));
+  httpServer.listen(LOCAL_PORT, () => console.log(`HTTP started on port http://localhost:${LOCAL_PORT}`));
 }
