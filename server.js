@@ -15,14 +15,9 @@ const nodemailer = require("nodemailer");
 const { sendEmail } = require("./mail-sender");
 
 const jsonParser = bodyParser.json();
-const PRODUCTION = process.env.NODE_HTTPS;
+const HTTPS = process.env.HTTPS;
 const STATIC_PATH = process.env.STATIC_PATH;
 const LOCAL_PORT = 3000;
-
-const cerfPathes = {
-  // cert: PATH_TO_cert,
-  // key: PATH_TO_key,
-}
 
 const allowedOrigins = [
   'http://localhost:8080',
@@ -95,12 +90,12 @@ app.post('/api/send-mail', jsonParser, async (req, response) => {
   return response.status(400).json({ message: 'error' });
 });
 
-if (PRODUCTION) {
+if (HTTPS) {
   const httpServer = http.createServer(app);
-
+  
   const httpsServer = https.createServer({
-    cert: cerfPathes.cert,
-    key: cerfPathes.key,
+    key: fs.readFileSync(path.join(__dirname, 'cert', './key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert', './cert.pem')),
   },app);
 
   httpServer.listen(80, () => console.log('HTTP started on port https://localhost:80'));
