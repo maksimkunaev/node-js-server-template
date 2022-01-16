@@ -94,8 +94,8 @@ if (HTTPS) {
   const httpServer = http.createServer(app);
   
   const httpsServer = https.createServer({
-    key: fs.readFileSync(path.join(__dirname, 'cert', './key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, 'cert', './cert.pem')),
+    key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    cert: fs.readFileSync(process.env.SSL_CERT_PATH),
   },app);
 
   httpServer.listen(80, () => console.log('HTTP started on port https://localhost:80'));
