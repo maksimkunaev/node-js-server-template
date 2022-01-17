@@ -1,6 +1,7 @@
 const icons = {
 	naughty: '../naughty.png'
 }
+
 const options = {
   icon: icons.naughty,
   vibrate: [200, 100, 200, 100, 200, 100, 200],
@@ -29,8 +30,6 @@ document.querySelector('.unregister-button')
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
 	  .then((reg) => {
-	    console.log('Registration succeeded. Scope is ' + reg.scope);
-
 	    if (window.Notification.permission !== 'granted') {
 		    requestPermission()
 	    }
@@ -41,19 +40,15 @@ if ('serviceWorker' in navigator) {
 
 function showNotification() {
 	navigator.serviceWorker.ready.then(worker=>{
-		console.log('client: worker.showNotification',worker.showNotification)
-		worker.showNotification('Hello there!', options)
+		worker.showNotification('New notify!', options)
 	})
 };
 
 function requestPermission() {
   Notification.requestPermission(function(result) {
     if (result === 'granted') {
-
       navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Hello there!', {
-          body: 'Buzz! Buzz!',
-        });
+        registration.showNotification('Push notifications activated');
       });
     }
   });
@@ -63,6 +58,5 @@ function unregisterSW() {
 	navigator.serviceWorker.getRegistrations().then(function(registrations) {
 	 for(let registration of registrations) {
 	  registration.unregister()
-	  console.log('unregister', registration)
 	}})
 }
