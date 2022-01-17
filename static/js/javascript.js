@@ -23,6 +23,9 @@ const options = {
 document.querySelector('.show-button')
 	.addEventListener('click', showNotification)
 
+document.querySelector('.unregister-button')
+	.addEventListener('click', unregisterSW)
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
 	  .then((reg) => {
@@ -54,4 +57,12 @@ function requestPermission() {
       });
     }
   });
+}
+
+function unregisterSW() {
+	navigator.serviceWorker.getRegistrations().then(function(registrations) {
+	 for(let registration of registrations) {
+	  registration.unregister()
+	  console.log('unregister', registration)
+	}})
 }
