@@ -1,3 +1,25 @@
+const icons = {
+	naughty: '../naughty.png'
+}
+const options = {
+  icon: icons.naughty,
+  vibrate: [200, 100, 200, 100, 200, 100, 200],
+  tag: 'vibration-sample',
+  requireInteraction: true,
+	actions: [
+    {
+      action: 'coffee-action',
+      title: 'Coffee',
+      icon: icons.naughty 
+    },
+    {
+      action: 'doughnut-action',
+      title: 'Doughnut',
+      icon: icons.naughty
+    },
+  ]
+}
+
 document.querySelector('.show-button')
 	.addEventListener('click', showNotification)
 
@@ -17,7 +39,7 @@ if ('serviceWorker' in navigator) {
 function showNotification() {
 	navigator.serviceWorker.ready.then(worker=>{
 		console.log('client: worker.showNotification',worker.showNotification)
-		worker.showNotification('title from client')
+		worker.showNotification('Hello there!', options)
 	})
 };
 
@@ -26,11 +48,8 @@ function requestPermission() {
     if (result === 'granted') {
 
       navigator.serviceWorker.ready.then(function(registration) {
-        registration.showNotification('Vibration Sample', {
+        registration.showNotification('Hello there!', {
           body: 'Buzz! Buzz!',
-          icon: '../images.png',
-          vibrate: [200, 100, 200, 100, 200, 100, 200],
-          tag: 'vibration-sample'
         });
       });
     }
