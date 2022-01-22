@@ -67,6 +67,15 @@ app.use('/', expressStaticGzip(STATIC_PATH, {
   }],
   orderPreference: ['br'],
 }));
+app.use('/reminders', expressStaticGzip(STATIC_PATH, {
+  enableBrotli: true,
+  customCompressions: [{
+    encodingName: 'deflate',
+    fileExtension: 'qz',
+  }],
+  orderPreference: ['br'],
+}));
+
 app.use(express.static(STATIC_PATH));
 app.use('/public', express.static(__dirname + '/public'));
 app.use(cookieParser());
