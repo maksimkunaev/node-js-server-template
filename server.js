@@ -55,7 +55,9 @@ app.use(cors({
   ]
 }));
 
-app.use(redirectToHTTPS([/localhost:(\d{4})/], [], 301));
+if (HTTPS){
+  app.use(redirectToHTTPS([/localhost:(\d{4})/], [], 301));
+}
 
 const expressStaticGzip = require('express-static-gzip');
 
