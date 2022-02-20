@@ -12,11 +12,12 @@ const http = require('http');
 const app = express();
 const get = require('lodash/get');
 const nodemailer = require("nodemailer");
-const { sendEmail } = require("./mail-sender");
+const { sendMessage } = require("./message-sender");
 
 const jsonParser = bodyParser.json();
 const HTTPS = process.env.HTTPS;
 const STATIC_PATH = process.env.STATIC_PATH;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const LOCAL_PORT = 3000;
 
 const allowedOrigins = [
@@ -77,10 +78,10 @@ app.get('*', (req, res) => {
 });
 
 app.post('/api/send-mail', jsonParser, async (req, response) => {
-  const { message } = req.body;
+  const { rate, text, gaGlobal } = req.body;
 
     try {
-      await sendEmail(message);
+      await sendMessage(TELEGRAM_CHAT_ID, { rate, text, gaGlobal });
       return response.status(200).json({ message: 'success' });
     } catch (error) {
       console.log(error)
