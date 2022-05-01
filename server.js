@@ -16,17 +16,19 @@ const { sendEmail } = require("./services/mail-sender");
 const { webSocket } = require("./services/web-socket-service");
 
 const jsonParser = bodyParser.json();
-const HTTPS = process.env.HTTPS;
+const SERVER_PORT = process.env.SERVER_PORT || 9000
+const IS_SECURE = process.env.IS_SECURE;
+
 const STATIC_PATH = process.env.STATIC_PATH;
-const LOCAL_PORT = 9000;
-const CLIENT_ORIGIN_LOCAL = `http://localhost:${LOCAL_PORT}`
-const CLIENT_ORIGIN_HTTPS = "https://localhost:443";
-const CLIENT_ORIGIN_HTTP = "http://localhost:80";
+const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
+const CLIENT_ORIGIN_LOCAL = `http://localhost:${CLIENT_PORT}`
+const CLIENT_ORIGIN_PROD_SECURE = "https://localhost:443";
+const CLIENT_ORIGIN_PROD = "http://localhost:80";
 
 const allowedOrigins = [
   CLIENT_ORIGIN_LOCAL,
-  CLIENT_ORIGIN_HTTPS,
-  CLIENT_ORIGIN_HTTP,
+  CLIENT_ORIGIN_PROD_SECURE,
+  CLIENT_ORIGIN_PROD,
 ];
 
 app.use(cors({
@@ -94,7 +96,7 @@ app.post('/api/send-mail', jsonParser, async (req, response) => {
   return response.status(400).json({ message: 'error' });
 });
 
-if (HTTPS) {
+if (IS_SECURE) {
   const httpServer = http.createServer(app);
   
   const httpsServer = https.createServer({
@@ -102,13 +104,13 @@ if (HTTPS) {
     cert: fs.readFileSync(process.env.SSL_CERT_PATH),
   },app);
 
-  webSocket(httpServer, CLIENT_ORIGIN_HTTP);
-  webSocket(httpsServer, CLIENT_ORIGIN_HTTPS);
-  httpsServer.listen(80, () => console.log(`HTTP started on port ${CLIENT_ORIGIN_HTTP}`));
-  httpsServer.listen(443, () => console.log(`HTTPS started on port ${CLIENT_ORIGIN_HTTPS}`));
+  webSocket(httpServer, CLIENT_ORIGIN_PROD);
+  webSocket(httpsServer, CLIENT_ORIGIN_PROD_SECURE);
+  httpsServer.listen(80, () => console.log(`HTTP started on port ${80}`));
+  httpsServer.listen(443, () => console.log(`HTTPS started on port ${443}`));
 } else {
   const httpServer = http.createServer(app);
 
   webSocket(httpServer, CLIENT_ORIGIN_LOCAL);
-  httpServer.listen(LOCAL_PORT, () => console.log(`HTTP started on port ${CLIENT_ORIGIN_LOCAL}`));
+  httpServer.listen(SERVER_PORT, () => console.log(`HTTP started on port ${SERVER_PORT}`));
 }
