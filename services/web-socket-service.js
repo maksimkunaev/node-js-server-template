@@ -1,12 +1,8 @@
 const { Server } = require("socket.io");
 
-async function onClientMessageReceive(msg) {
-	console.log("onClientMessageReceive", { msg })
-}
-
 function sendMessageToClient(io, data) {
 	console.log("sendMessageToClient", data)
-  io.emit('message', data);
+ 
 }
 
 function webSocket (server, clientOrigin) {
@@ -18,12 +14,24 @@ function webSocket (server, clientOrigin) {
   });
   
   io.on('connection', (socket) => {
+    console.log('ws: a user connected', socket.id);
+    console.log('\n')
+
+    socket.on('disconnect', () => {
+      console.log('ws: user disconnected', socket.id);
+    });
+
     socket.on('message', (msg) => {
-      onClientMessageReceive(msg)
+      console.log("ws: message from client", socket.id, { msg })
+      console.log('\n')
       
-      setTimeout(() => sendMessageToClient(io, {response: "we received your message"}), 1000)
+      setTimeout(() =>  {
+        io.to(socket.id).emit("message",{ responce: "we received your message" })
+      }, 1000)
     }); 
   });
+
+
 }
 
 module.exports = {
