@@ -12,17 +12,21 @@ const http = require('http');
 const app = express();
 const get = require('lodash/get');
 const nodemailer = require("nodemailer");
-const { sendEmail } = require("./mail-sender");
+const { sendEmail } = require("./services/mail-sender");
+const { webSocket } = require("./services/web-socket-service");
 
 const jsonParser = bodyParser.json();
 const HTTPS = process.env.HTTPS;
 const STATIC_PATH = process.env.STATIC_PATH;
-const LOCAL_PORT = 3000;
+const LOCAL_PORT = 9000;
+const CLIENT_ORIGIN_LOCAL = `http://localhost:${LOCAL_PORT}`
+const CLIENT_ORIGIN_HTTPS = "https://localhost:443";
+const CLIENT_ORIGIN_HTTP = "http://localhost:80";
 
 const allowedOrigins = [
-  'http://localhost:8080',
-  'https://localhost:8080',
-  // another url
+  CLIENT_ORIGIN_LOCAL,
+  CLIENT_ORIGIN_HTTPS,
+  CLIENT_ORIGIN_HTTP,
 ];
 
 app.use(cors({
@@ -98,10 +102,13 @@ if (HTTPS) {
     cert: fs.readFileSync(process.env.SSL_CERT_PATH),
   },app);
 
-  httpServer.listen(80, () => console.log('HTTP started on port https://localhost:80'));
-  httpsServer.listen(443, () => console.log('HTTPS started on port http://localhost:443'));
+  webSocket(httpServer, CLIENT_ORIGIN_HTTP);
+  webSocket(httpsServer, CLIENT_ORIGIN_HTTPS);
+  httpsServer.listen(80, () => console.log(`HTTP started on port ${CLIENT_ORIGIN_HTTP}`));
+  httpsServer.listen(443, () => console.log(`HTTPS started on port ${CLIENT_ORIGIN_HTTPS}`));
 } else {
   const httpServer = http.createServer(app);
 
-  httpServer.listen(LOCAL_PORT, () => console.log(`HTTP started on port http://localhost:${LOCAL_PORT}`));
+  webSocket(httpServer, CLIENT_ORIGIN_LOCAL);
+  httpServer.listen(LOCAL_PORT, () => console.log(`HTTP started on port ${CLIENT_ORIGIN_LOCAL}`));
 }
