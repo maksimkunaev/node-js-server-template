@@ -32,10 +32,11 @@ $ npm install
 $ npm run dev:server
 
 API endpoint is enabled on http://localhost:9000/api/send-mail
-
+CLIENT is enabled on http://localhost:9000/
 
 If IS_SECURE=true
 API endpoint is enabled on http://localhost:80/api/send-mail
+CLIENT is enabled on http://localhost:9000/
 
 # start node server
 $ npm run prod:server
