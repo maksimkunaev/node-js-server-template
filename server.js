@@ -17,7 +17,7 @@ const { webSocket } = require("./services/web-socket-service");
 
 const jsonParser = bodyParser.json();
 const SERVER_PORT = process.env.SERVER_PORT || 9000;
-const IS_SECURE = process.env.IS_SECURE;
+const IS_HTTPS = process.env.IS_HTTPS;
 
 const STATIC_PATH = process.env.STATIC_PATH;
 const CLIENT_PORT = process.env.CLIENT_PORT || 3000;
@@ -105,7 +105,7 @@ app.post("/api/send-mail", jsonParser, async (req, response) => {
   return response.status(400).json({ message: "error" });
 });
 
-if (IS_SECURE === "true") {
+if (IS_HTTPS === "true") {
   const httpServer = http.createServer(app);
 
   const httpsServer = https.createServer(
